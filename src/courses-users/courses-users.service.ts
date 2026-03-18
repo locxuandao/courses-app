@@ -25,6 +25,12 @@ export class CoursesUsersService {
   ) {}
 
   async enroll(userId: number, courseId: number): Promise<CourseUser> {
+    if (!userId) {
+      this.logger.warn(
+        `Attempt to enroll with missing userId for course ID: ${courseId}`,
+      );
+      throw new BadRequestException('User id is required');
+    }
     const course = await this.courseRepo.findOne({
       where: { id: courseId },
     });
@@ -58,6 +64,10 @@ export class CoursesUsersService {
     userId: number,
     pagination: PaginationDto,
   ): Promise<PaginatedResult<CourseUser>> {
+    if (!userId) {
+      this.logger.warn('Attempt to get enrolled courses with missing userId');
+      throw new BadRequestException('User id is required');
+    }
     const { page = 1, limit = 10 } = pagination;
     const skip = (page - 1) * limit;
 
@@ -84,6 +94,12 @@ export class CoursesUsersService {
   }
 
   async unenroll(userId: number, courseId: number): Promise<void> {
+    if (!userId) {
+      this.logger.warn(
+        `Attempt to unenroll with missing userId for course ID: ${courseId}`,
+      );
+      throw new BadRequestException('User id is required');
+    }
     const enrollment = await this.coursesUsersRepository.findOne({
       where: {
         user: { id: userId },
@@ -95,7 +111,10 @@ export class CoursesUsersService {
       throw new NotFoundException('Enrollment not found');
     }
 
-    await this.coursesUsersRepository.remove(enrollment);
-    this.logger.log(`User ID ${userId} unenrolled from course ID ${courseId}`);
+    enrollment.user = null as any;
+    await this.coursesUsersRepository.save(enrollment);
+    this.logger.log(
+      `User ID ${userId} disassociated from enrollment ID ${enrollment.id} for course ID ${courseId}`,
+    );
   }
 }

@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Courses } from './entity/courses.entity';
 import { Repository } from 'typeorm';
 import { CreateCourseDto, UpdateCourseDto } from './dto/courses.dto';
+import { UsersService } from 'src/users/users.service';
 import {
   PaginatedResult,
   PaginationDto,
@@ -15,6 +16,7 @@ export class CoursesService {
   constructor(
     @InjectRepository(Courses)
     private coursesRepository: Repository<Courses>,
+    private usersService: UsersService,
   ) {}
 
   async findAll(pagination: PaginationDto): Promise<PaginatedResult<Courses>> {
@@ -46,9 +48,11 @@ export class CoursesService {
 
   async create(dto: CreateCourseDto, author_id: number): Promise<Courses> {
     try {
+      const author = await this.usersService.findUserById(author_id);
+
       const course = this.coursesRepository.create({
         ...dto,
-        author: { id: author_id },
+        author,
       });
 
       const savedCourse = await this.coursesRepository.save(course);

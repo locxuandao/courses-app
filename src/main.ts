@@ -8,6 +8,15 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
 
+  const corsOptions = {
+    origin: '*',
+    methods: 'GET,POST,PUT,PATCH,DELETE',
+    preflightContinue: false,
+    optionsSuccessStatus: 200,
+    credentials: true,
+  };
+  app.enableCors(corsOptions);
+
   const swaggerConfig = new DocumentBuilder()
     .setTitle('COURSE-APP-API')
     .setDescription(`Build time ${new Date().toISOString()}`)
