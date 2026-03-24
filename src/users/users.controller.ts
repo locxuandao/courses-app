@@ -15,15 +15,13 @@ import { ApiOperation, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto } from './dto/users.dto';
 
-import { RolesGuard } from 'src/auth/roles.guard';
-import { Roles } from 'src/auth/decorator/roles.decorator';
-import { ROLE } from 'src/constants';
-import { JwtAuthGuard } from 'src/auth/jwt.guard';
+import { PermissionsGuard } from 'src/auth/permissions.guard';
+import { Permissions } from 'src/auth/decorator/permission.decorator';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Admin - User Management')
 @ApiBearerAuth('access-token')
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(ROLE.ADMIN)
+@UseGuards(AuthGuard('google'), PermissionsGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -31,24 +29,28 @@ export class UsersController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new user (admin only)' })
+  @Permissions('user:create')
   create(@Body() dto: CreateUserDto) {
     return this.usersService.create(dto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all users (admin only)' })
+  @Permissions('user:read')
   findAll() {
     return this.usersService.findAll();
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a user by ID (admin only)' })
+  @Permissions('user:read')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findUserById(id);
   }
 
   @Put(':id')
   @ApiOperation({ summary: 'Update a user by ID (admin only)' })
+  @Permissions('user:update')
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateUserDto) {
     return this.usersService.update(id, dto);
   }
@@ -56,6 +58,7 @@ export class UsersController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete a user by ID (admin only)' })
+  @Permissions('user:read')
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.delete(id);
   }

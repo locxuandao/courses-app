@@ -11,13 +11,12 @@ import {
 } from '@nestjs/common';
 import { CoursesUsersService } from './courses-users.service';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt.guard';
+
 import { PaginationDto } from '../constants/dto/pagination.dto';
 
 @ApiTags('Courses Enrollment')
 @Controller({ path: 'courses-users' })
 @ApiBearerAuth('access-token')
-@UseGuards(JwtAuthGuard)
 export class CoursesUsersController {
   constructor(private readonly coursesUsersService: CoursesUsersService) {}
 

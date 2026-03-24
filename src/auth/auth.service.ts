@@ -14,39 +14,36 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.usersService.findUserbyEmail(email);
-
-    if (user && (await bcrypt.compare(password, user.password))) {
-      const { password, ...result } = user;
-      return result;
+  async loginWithGoogle(googleUser: any) {
+    if (!googleUser || !googleUser.email) {
+      throw new UnauthorizedException('Invalid Google user');
     }
-  }
 
-  async register(dto: CreateUserDto) {
-    const hashedPassword = await bcrypt.hash(dto.password, 10);
-    try {
-      const user = await this.usersService.create({
-        ...dto,
-        password: hashedPassword,
-      });
-      this.logger.log(`User registered with email: ${user.email}`);
-      return user;
-    } catch (error) {
-      this.logger.error('Failed to register user', error.stack);
-      throw new UnauthorizedException('Failed to register user');
-    }
-  }
+    console.log('Google user:', googleUser);
 
-  async login(dto: LoginDto) {
-    const user = await this.validateUser(dto.email, dto.password);
+    let user = await this.usersService.findUserbyEmail(googleUser.email);
+
     if (!user) {
-      this.logger.warn(`Invalid login attempt for email: ${dto.email}`);
-      throw new UnauthorizedException('Invalid credentials');
+      user = await this.usersService.create({
+        email: googleUser.email,
+        username:
+          googleUser.displayName ||
+          googleUser.name?.givenName ||
+          googleUser.email,
+        avatarUrl: googleUser.avatarUrl,
+        roleId: 2,
+      });
     }
-    const payload = { email: user.email, sub: user.id, role: user.role };
 
-    console.log('payload', payload);
+    const permissions = user.role?.permissions?.map((p) => p.name) || [];
+
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role?.name,
+      permissions,
+    };
+
     return {
       access_token: this.jwtService.sign(payload),
       refresh_token: this.jwtService.sign(payload, {

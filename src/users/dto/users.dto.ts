@@ -1,15 +1,17 @@
-import { IsDate, IsEmail, IsOptional, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsEmail,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { ROLE } from 'src/constants';
+import { Optional } from '@nestjs/common';
 
 export class CreateUserDto {
   @IsString()
   @ApiProperty()
   username: string;
-
-  @IsDate()
-  @ApiProperty()
-  dob: Date;
 
   @IsEmail()
   @ApiProperty()
@@ -17,24 +19,16 @@ export class CreateUserDto {
 
   @IsString()
   @ApiProperty()
-  password: string;
+  @Optional()
+  avatarUrl?: string;
 
-  @ApiProperty({ default: ROLE.USER })
-  @IsString()
-  role: ROLE;
+  @IsNumber()
+  @ApiProperty()
+  roleId: number;
 }
 
 export class UpdateUserDto {
-  @IsString()
+  @IsNumber()
   @ApiProperty()
-  username: string;
-
-  @IsDate()
-  @ApiProperty()
-  @IsOptional()
-  dob?: Date;
-
-  @ApiProperty()
-  @IsString()
-  role: ROLE;
+  roleId: number;
 }

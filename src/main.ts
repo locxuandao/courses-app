@@ -9,7 +9,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   const corsOptions = {
-    origin: '*',
+    origin: ['https://revise-hou.tech', 'http://localhost:5173'],
     methods: 'GET,POST,PUT,PATCH,DELETE',
     preflightContinue: false,
     optionsSuccessStatus: 200,

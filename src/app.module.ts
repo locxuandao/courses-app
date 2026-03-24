@@ -5,8 +5,9 @@ import { Users } from './users/entity/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/user.module';
 import { CoursesModule } from './courses/courses.module';
-import { Courses } from './courses/entity/courses.entity';
 import { CoursesUsersModule } from './courses-users/courses-users.module';
+import { Roles } from './roles/entity/roles.entity';
+import { Permissions } from './permissions/entity/permissions.entity';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { CoursesUsersModule } from './courses-users/courses-users.module';
         port: parseInt(process.env.DB_PORT ?? '5432'),
         username: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
-        entities: [Users],
+        entities: [Users, Permissions, Roles],
         database: process.env.DB_NAME,
         synchronize: true,
         autoLoadEntities: true,

@@ -1,8 +1,14 @@
-import { Injectable, Logger, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Users } from './entity/user.entity';
 import { CreateUserDto, UpdateUserDto } from './dto/users.dto';
+import { Roles } from 'src/roles/entity/roles.entity';
 
 @Injectable()
 export class UsersService {
@@ -11,14 +17,30 @@ export class UsersService {
   constructor(
     @InjectRepository(Users)
     private usersRepository: Repository<Users>,
+
+    @InjectRepository(Roles)
+    private readonly roleRepository: Repository<Roles>,
   ) {}
 
   async create(dto: CreateUserDto) {
-    const user = this.usersRepository.create(dto);
+    const role = await this.roleRepository.findOne({
+      where: { id: dto.roleId },
+    });
+
+    if (!role) {
+      throw new NotFoundException('Role not found');
+    }
+
+    const user = this.usersRepository.create({
+      username: dto.username,
+      email: dto.email,
+      role: role,
+      avatarUrl: dto.avatarUrl,
+    });
+
     try {
       const result = await this.usersRepository.save(user);
       this.logger.log(`User created with id: ${result.id}`);
-
       return result;
     } catch (error) {
       this.logger.error('Failed to create user', error.stack);
@@ -28,13 +50,10 @@ export class UsersService {
 
   async findUserbyEmail(email: string) {
     try {
-      const user = await this.usersRepository.findOne({ where: { email } });
-      if (!user) {
-        this.logger.warn(`User not found with email: ${email}`);
-        throw new BadRequestException('User not found');
-      }
-
-      return user;
+      return await this.usersRepository.findOne({
+        where: { email },
+        relations: ['role', 'role.permissions'],
+      });
     } catch (error) {
       this.logger.error('Failed to find user', error.stack);
       throw new BadRequestException('Failed to find user');
@@ -68,16 +87,31 @@ export class UsersService {
 
   async update(id: number, dto: UpdateUserDto) {
     try {
-      const user = await this.usersRepository.findOne({ where: { id } });
+      const user = await this.usersRepository.findOne({
+        where: { id },
+        relations: ['role'],
+      });
 
       if (!user) {
         this.logger.warn(`User not found with id: ${id}`);
         throw new BadRequestException('User not found');
       }
-      const updatedUser = this.usersRepository.merge(user, dto);
-      const result = await this.usersRepository.save(updatedUser);
-      this.logger.log(`User updated with id: ${result.id}`);
 
+      if (dto.roleId !== undefined) {
+        const role = await this.roleRepository.findOne({
+          where: { id: dto.roleId },
+        });
+
+        if (!role) {
+          throw new NotFoundException('Role not found');
+        }
+
+        user.role = role;
+      }
+
+      const result = await this.usersRepository.save(user);
+
+      this.logger.log(`User updated with id: ${result.id}`);
       return result;
     } catch (error) {
       this.logger.error('Failed to update user', error.stack);
