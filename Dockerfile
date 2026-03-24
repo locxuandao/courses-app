@@ -37,10 +37,10 @@ COPY --from=builder /app/dist ./dist
 
 # Set appropriate environment variables (can be overridden by docker-compose or run command)
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV PORT=4000
 
 # Expose the application port
-EXPOSE 3000
+EXPOSE 4000
 
 # Start the application
 CMD ["node", "dist/main"]
