@@ -26,10 +26,7 @@ export class AuthService {
     if (!user) {
       user = await this.usersService.create({
         email: googleUser.email,
-        username:
-          googleUser.displayName ||
-          googleUser.name?.givenName ||
-          googleUser.email,
+        username: googleUser.username,
         avatarUrl: googleUser.avatarUrl,
         roleId: 2,
       });

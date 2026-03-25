@@ -4,8 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from './users/entity/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/user.module';
-import { CoursesModule } from './courses/courses.module';
-import { CoursesUsersModule } from './courses-users/courses-users.module';
 import { Roles } from './roles/entity/roles.entity';
 import { Permissions } from './permissions/entity/permissions.entity';
 
@@ -30,8 +28,6 @@ import { Permissions } from './permissions/entity/permissions.entity';
     }),
     AuthModule,
     UsersModule,
-    CoursesModule,
-    CoursesUsersModule,
   ],
 })
 export class AppModule {}
