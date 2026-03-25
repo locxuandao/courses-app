@@ -20,7 +20,8 @@ import { Permissions } from 'src/auth/decorator/permission.decorator';
 import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Admin - User Management')
-@UseGuards(AuthGuard('google'), PermissionsGuard)
+@ApiBearerAuth('access-token')
+@UseGuards(AuthGuard('jwt'), PermissionsGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

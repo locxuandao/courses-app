@@ -8,6 +8,7 @@ import { AuthController } from './auth.controller';
 import { UsersModule } from 'src/users/user.module';
 
 import { GoogleStrategy } from './google.strategy';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   imports: [
@@ -18,11 +19,11 @@ import { GoogleStrategy } from './google.strategy';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         secret: config.get<string>('SECRET_KEY'),
-        signOptions: { expiresIn: '1d' },
+        signOptions: { expiresIn: '5m' },
       }),
     }),
   ],
-  providers: [AuthService, GoogleStrategy],
+  providers: [AuthService, GoogleStrategy, JwtStrategy],
   controllers: [AuthController],
   exports: [JwtModule, AuthService],
 })

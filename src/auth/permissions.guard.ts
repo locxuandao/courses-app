@@ -1,4 +1,10 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { PERMISSIONS_KEY } from './decorator/permission.decorator';
 
@@ -12,23 +18,34 @@ export class PermissionsGuard implements CanActivate {
       [context.getHandler(), context.getClass()],
     );
 
-    if (!requiredPermissions) {
+    if (!requiredPermissions || requiredPermissions.length === 0) {
       return true;
     }
 
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    if (!user || !user.role || !user.role.permissions) {
-      return false;
+    if (!user) {
+      throw new UnauthorizedException('No user in request — check JwtStrategy');
     }
 
-    const userPermissions: string[] = user.role.permissions.map((p) => p.name);
+    const permissions: string[] =
+      user?.role?.permissions?.map((p: { name: string }) => p.name) ?? [];
 
-    if (userPermissions.includes('*')) {
+    if (permissions.includes('*')) {
       return true;
     }
 
-    return requiredPermissions.some((perm) => userPermissions.includes(perm));
+    const hasPermission = requiredPermissions.some((perm) =>
+      permissions.includes(perm),
+    );
+
+    if (!hasPermission) {
+      throw new ForbiddenException(
+        `Required: [${requiredPermissions.join(', ')}] — user has: [${permissions.join(', ')}]`,
+      );
+    }
+
+    return true;
   }
 }

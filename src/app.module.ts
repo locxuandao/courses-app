@@ -6,6 +6,8 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/user.module';
 import { Roles } from './roles/entity/roles.entity';
 import { Permissions } from './permissions/entity/permissions.entity';
+import { Subject } from 'rxjs';
+import { SubjectsModule } from './subjects/subjects.module';
 
 @Module({
   imports: [
@@ -28,6 +30,7 @@ import { Permissions } from './permissions/entity/permissions.entity';
     }),
     AuthModule,
     UsersModule,
+    SubjectsModule,
   ],
 })
 export class AppModule {}

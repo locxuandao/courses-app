@@ -2,7 +2,7 @@ export interface UserJwtPayload {
   email: string;
   sub: number;
   role: string;
-  permissions: string;
+  permissions: string[];
   iat?: number;
   exp?: number;
 }

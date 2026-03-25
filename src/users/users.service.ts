@@ -20,7 +20,7 @@ export class UsersService {
 
     @InjectRepository(Roles)
     private readonly roleRepository: Repository<Roles>,
-  ) { }
+  ) {}
 
   async create(dto: CreateUserDto) {
     const role = await this.roleRepository.findOne({
@@ -62,10 +62,13 @@ export class UsersService {
 
   async findUserById(id: number) {
     try {
-      const user = await this.usersRepository.findOne({ where: { id } });
+      const user = await this.usersRepository.findOne({
+        where: { id },
+        relations: ['role', 'role.permissions'],
+      });
       if (!user) {
         this.logger.warn(`User not found with id: ${id}`);
-        throw new BadRequestException('User not found');
+        throw new NotFoundException(`User not found with id: ${id}`);
       }
       return user;
     } catch (error) {

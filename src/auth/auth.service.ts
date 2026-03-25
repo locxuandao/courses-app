@@ -19,8 +19,6 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Google user');
     }
 
-    console.log('Google user:', googleUser);
-
     let user = await this.usersService.findUserbyEmail(googleUser.email);
 
     if (!user) {
