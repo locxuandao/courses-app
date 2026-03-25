@@ -31,7 +31,7 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req: any, @Res() res: Response) {
     const email = req.user?.email;
-    if (!email || !email.endsWith('@hou.edu.vn')) {
+    if (!email || !/^[^@]+@([a-zA-Z0-9_\-]+\.)*hou\.edu\.vn$/.test(email)) {
       return res.redirect(`${FRONTEND_URL}/login?error=unauthorized_email`);
     }
 
