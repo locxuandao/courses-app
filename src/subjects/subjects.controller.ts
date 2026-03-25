@@ -1,14 +1,14 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { SubjectjsService } from './subjectjs.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
-import { PermissionsGuard } from 'src/auth/permissions.guard';
 import { Permissions } from 'src/auth/decorator/permission.decorator';
 import { CreateSubjectDto } from './dto/subjects.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { PermissionsGuard } from 'src/auth/guards/permissions.guard';
 
 @ApiTags('Subjects Management')
 @ApiBearerAuth('access-token')
-@UseGuards(AuthGuard('jwt'), PermissionsGuard)
+@UseGuards(JwtAuthGuard, PermissionsGuard)
 @Controller('subjects')
 export class SubjectsController {
   constructor(private readonly subjectsService: SubjectjsService) {}

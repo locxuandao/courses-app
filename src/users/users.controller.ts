@@ -15,13 +15,13 @@ import { ApiOperation, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto } from './dto/users.dto';
 
-import { PermissionsGuard } from 'src/auth/permissions.guard';
 import { Permissions } from 'src/auth/decorator/permission.decorator';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { PermissionsGuard } from 'src/auth/guards/permissions.guard';
 
 @ApiTags('Admin - User Management')
 @ApiBearerAuth('access-token')
-@UseGuards(AuthGuard('jwt'), PermissionsGuard)
+@UseGuards(JwtAuthGuard, PermissionsGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
