@@ -3,4 +3,5 @@ export const TABLES_NAME = {
   ROLES: 'roles',
   PERMISSIONS: 'permissions',
   SUBJECTS: 'subjects',
+  DOCUMENTS: 'documents',
 };

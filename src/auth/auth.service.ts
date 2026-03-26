@@ -1,9 +1,7 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import * as bcrypt from 'bcrypt';
-import { CreateUserDto } from 'src/users/dto/users.dto';
-import { LoginDto, RefreshTokenDto } from './dto/auth.dto';
+import { RefreshTokenDto } from './dto/auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -27,6 +25,8 @@ export class AuthService {
         username: googleUser.username,
         avatarUrl: googleUser.avatarUrl,
         roleId: 2,
+        createdAt: new Date(),
+        updateAt: new Date(),
       });
     }
 

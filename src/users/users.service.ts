@@ -79,7 +79,9 @@ export class UsersService {
 
   async findAll() {
     try {
-      const users = await this.usersRepository.find();
+      const users = await this.usersRepository.find({
+        relations: ['role', 'role.permissions'],
+      });
       this.logger.log(`Retrieved ${users.length} users`);
       return users;
     } catch (error) {

@@ -25,10 +25,22 @@ export class CreateUserDto {
   @IsNumber()
   @ApiProperty()
   roleId: number;
+
+  @IsDate()
+  @ApiProperty()
+  createdAt: Date;
+
+  @IsDate()
+  @ApiProperty()
+  updateAt: Date;
 }
 
 export class UpdateUserDto {
   @IsNumber()
   @ApiProperty()
   roleId: number;
+
+  @IsDate()
+  @ApiProperty()
+  updateAt: Date;
 }

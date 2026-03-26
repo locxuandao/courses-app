@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   Post,
-  Put,
   Delete,
   Body,
   Param,
@@ -10,6 +9,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  Patch,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
@@ -48,7 +48,7 @@ export class UsersController {
     return this.usersService.findUserById(id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @ApiOperation({ summary: 'Update a user by ID (admin only)' })
   @Permissions('user:update')
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateUserDto) {

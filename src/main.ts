@@ -18,7 +18,7 @@ async function bootstrap() {
   app.enableCors(corsOptions);
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('COURSE-APP-API')
+    .setTitle('REVISE-HOU-API')
     .setDescription(`Build time ${new Date().toISOString()}`)
     .setVersion('1.0.0')
     .addBearerAuth(
@@ -35,7 +35,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('swagger', app, document, {
-    customSiteTitle: 'COURSE-APP API Docs',
+    customSiteTitle: 'REVISE-HOU API Docs',
   });
 
   await app.listen(process.env.PORT ?? 4000);
