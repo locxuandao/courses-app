@@ -18,7 +18,7 @@ const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('refresh')
+  @Post('refresh-token')
   async refreshToken(@Body() dto: RefreshTokenDto) {
     return this.authService.refreshToken(dto);
   }
@@ -38,8 +38,8 @@ export class AuthController {
     const data = await this.authService.loginWithGoogle(req.user);
 
     const params = new URLSearchParams({
-      access_token: data.access_token,
-      refresh_token: data.refresh_token,
+      accessToken: data.accessToken,
+      refreshToken: data.refreshToken,
       user: JSON.stringify(data.user),
     });
 

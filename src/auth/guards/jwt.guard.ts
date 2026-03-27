@@ -22,14 +22,12 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     try {
-      await this.jwtService.verifyAsync(token, {
-        secret: process.env.SECRET_KEY,
-      });
+      await this.jwtService.verifyAsync(token);
     } catch (err) {
       if (err instanceof TokenExpiredError) {
-        throw new UnauthorizedException('token_expired');
+        throw new UnauthorizedException('Token_expired');
       } else {
-        throw new UnauthorizedException('token_invalid');
+        throw new UnauthorizedException('Token_invalid');
       }
     }
 

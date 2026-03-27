@@ -40,8 +40,8 @@ export class AuthService {
     };
 
     return {
-      access_token: this.jwtService.sign(payload),
-      refresh_token: this.jwtService.sign(payload, {
+      accessToken: this.jwtService.sign(payload),
+      refreshToken: this.jwtService.sign(payload, {
         secret: process.env.REFRESH_TOKEN_SECRET,
         expiresIn: '7d',
       }),
@@ -55,13 +55,20 @@ export class AuthService {
         secret: process.env.REFRESH_TOKEN_SECRET,
       });
       const user = await this.usersService.findUserById(decoded.sub);
-      const payload = { email: user.email, sub: user.id, role: user.role };
+      const permissions = user.role?.permissions?.map((p) => p.name) || [];
+      const payload = {
+        email: user.email,
+        sub: user.id,
+        role: user.role,
+        permissions,
+      };
       return {
-        access_token: this.jwtService.sign(payload),
-        refresh_token: this.jwtService.sign(payload, {
+        accessToken: this.jwtService.sign(payload),
+        refreshToken: this.jwtService.sign(payload, {
           secret: process.env.REFRESH_TOKEN_SECRET,
           expiresIn: '7d',
         }),
+        user,
       };
     } catch (error) {
       this.logger.error('Failed to refresh token', error.stack);
