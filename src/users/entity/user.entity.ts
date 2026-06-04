@@ -27,7 +27,7 @@ export class Users {
 
   @Column({ nullable: true })
   @ApiProperty()
-  avatarUrl: string;
+  avatarUrl?: string;
 
   @CreateDateColumn()
   @ApiProperty()
