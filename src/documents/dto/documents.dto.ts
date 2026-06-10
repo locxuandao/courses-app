@@ -26,6 +26,15 @@ export class CreateDocumentDto {
   @IsOptional()
   isApprove?: boolean = false;
 
+  @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
+  fileUrl?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  attachments?: any;
+
   @ApiProperty()
   @IsNumber()
   authorId: number;
@@ -63,6 +72,15 @@ export class UpdateDocumentDto {
   @IsBoolean()
   @IsOptional()
   isApprove?: boolean = false;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
+  fileUrl?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  attachments?: any;
 
   @ApiProperty({ required: false })
   @IsNumber()

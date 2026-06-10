@@ -8,6 +8,7 @@ import { Roles } from './roles/entity/roles.entity';
 import { Permissions } from './permissions/entity/permissions.entity';
 import { SubjectsModule } from './subjects/subjects.module';
 import { DocumentsModule } from './documents/document.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { DocumentsModule } from './documents/document.module';
     UsersModule,
     SubjectsModule,
     DocumentsModule,
+    UploadModule,
   ],
 })
 export class AppModule {}

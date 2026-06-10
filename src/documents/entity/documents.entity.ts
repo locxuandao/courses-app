@@ -32,6 +32,14 @@ export class Documents {
   @ApiProperty()
   isApprove: boolean;
 
+  @Column({ nullable: true })
+  @ApiProperty({ required: false })
+  fileUrl?: string;
+
+  @Column({ type: 'json', nullable: true })
+  @ApiProperty({ required: false })
+  attachments?: any;
+
   @CreateDateColumn()
   @ApiProperty()
   createdAt: Date;

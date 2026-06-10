@@ -14,11 +14,20 @@ export class DocumentsService {
 
   async create(dto: CreateDocumentDto) {
     try {
-      const document = this.documentsRepository.create(dto);
+      const document = this.documentsRepository.create({
+        ...dto,
+        author: { id: dto.authorId },
+        subject: { id: dto.subjectId },
+      });
       const result = await this.documentsRepository.save(document);
       this.logger.log(`Document created with id: ${result.id}`);
 
-      return result;
+      const documentWithRelations = await this.documentsRepository.findOne({
+        where: { id: result.id },
+        relations: ['author', 'subject'],
+      });
+
+      return documentWithRelations;
     } catch (error) {
       this.logger.error('Failed to create document', error.stack);
       throw new Error('Failed to create document');
@@ -81,7 +90,7 @@ export class DocumentsService {
   async findBySubjectId(subjectId: number): Promise<Documents[]> {
     try {
       const documents = await this.documentsRepository.find({
-        where: { subject: { id: subjectId } },
+        where: { subject: { id: subjectId }, isApprove: true },
         relations: ['author', 'subject'],
       });
       this.logger.log(
